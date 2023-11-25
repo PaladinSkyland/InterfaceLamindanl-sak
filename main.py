@@ -30,7 +30,7 @@ class Game:
         self.tabbed_interface = TabbedInterface(self.screen)
 
         # Définir l'état initial
-        self.current_window = self.start_page
+        self.current_window = self.login_page
 
 
         pygame.display.set_caption("Interface Lamindanlsak")
@@ -79,6 +79,9 @@ class Game:
 
             if self.current_window == self.login_page:
                 self.login_page.handle_events(events)
+
+            if self.current_window == self.tabbed_interface:
+                self.tabbed_interface.handle_events(events)
 
             self.current_window.update()
             self.current_window.draw()
