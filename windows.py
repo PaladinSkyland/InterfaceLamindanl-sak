@@ -6,11 +6,14 @@ import sys
 pygame.init()
 
 font_path = "Ressources/Sevastopol-Interface.ttf"
-text_color = (0, 255, 0)
+
 
 # Définir les couleurs
+GREEN = (0,190,99)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+
+text_color = GREEN
 
 
 class StartPage:
@@ -130,7 +133,7 @@ class LoginPage:
         input_box_height = 50
 
         # Couleurs
-        border_color = (0, 255, 0)  # Vert pour les bordures
+        border_color = GREEN  # Vert pour les bordures
         inside_color = BLACK
 
         # Affichage du champ de mot de passe
@@ -154,58 +157,3 @@ class LoginPage:
         pygame.display.flip()
 
 
-class TabbedInterface:
-    def __init__(self, screen):
-        self.screen = screen
-        self.current_tab = 0  # Indice de l'onglet actuel
-        self.tab_rectangles = self.create_tab_rectangles()
-        self.tab_images = self.load_tab_images()
-
-    def create_tab_rectangles(self):
-        # Créer les rectangles des onglets
-        tab_width = 50
-        tab_height = 50
-        tab_spacing = 10
-        tab_rectangles = []
-        for i in range(5):
-            tab_rect = pygame.Rect(10, 10 + (tab_height + tab_spacing) * i, tab_width, tab_height)
-            tab_rectangles.append(tab_rect)
-        return tab_rectangles
-
-    def load_tab_images(self):
-        # Charger les images pour chaque onglet
-        tab_images = []
-        for i in range(3):
-            image_path = f"Ressources/Onglet/tab_image_{i}.png"  # Remplacez par le chemin de vos images
-            image = pygame.image.load(image_path)
-            if i == 0:
-                for j in range(2):
-                    tab_images.append(image)
-            tab_images.append(image)
-        return tab_images
-
-    def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                # Vérifier si un onglet a été cliqué
-                for i, tab_rect in enumerate(self.tab_rectangles):
-                    if tab_rect.collidepoint(event.pos):
-                        self.current_tab = i
-
-    def update(self):
-        pass
-
-    def draw(self):
-        self.screen.fill(BLACK)
-
-        # Dessiner les images des onglets
-        for i, tab_rect in enumerate(self.tab_rectangles):
-            image = self.tab_images[i]
-            self.screen.blit(image, tab_rect.topleft)
-
-        # Dessiner la ligne verticale entre les onglets
-        line_start = (self.tab_rectangles[0].right + 5, self.tab_rectangles[0].top)
-        line_end = (self.tab_rectangles[0].right + 5, self.tab_rectangles[-1].bottom)
-        pygame.draw.line(self.screen, WHITE, line_start, line_end, 2)
-
-        pygame.display.flip()

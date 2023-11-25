@@ -1,6 +1,7 @@
 import pygame
 import sys
-from windows import LoadingWindow, TabbedInterface, StartPage, LoginPage
+from windows import LoadingWindow, StartPage, LoginPage
+from TabbedInterface import TabbedInterface
 
 # Initialisation de Pygame
 pygame.init()
@@ -30,7 +31,7 @@ class Game:
         self.tabbed_interface = TabbedInterface(self.screen)
 
         # Définir l'état initial
-        self.current_window = self.login_page
+        self.current_window = self.tabbed_interface
 
 
         pygame.display.set_caption("Interface Lamindanlsak")
