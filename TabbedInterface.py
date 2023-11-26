@@ -78,7 +78,7 @@ class TabbedInterface:
                         if tab_sprite.rect.collidepoint(event.pos):
                             self.current_tab = i
                             print("Tab changed to", self.current_tab)
-        self.onglet[self.current_tab].handle_events(events)
+        self.onglet[self.current_tab].handle_events(events, self.tab_rect)
 
     def update(self):
         pass
@@ -132,7 +132,7 @@ class Onglet1:
         self.font_paragraph_bold = pygame.font.Font(font_path, int(self.screen_height * 0.045))  # Taille relative pour le titre
         self.font_paragraph_bold.set_bold(True)
 
-    def handle_events(self, events):
+    def handle_events(self, events, tab_rect):
         pass
 
     def print_formatted_text(self, paragraph_text):
@@ -233,7 +233,8 @@ class Onglet2:
 
 class Onglet3:
     def __init__(self, onglet_screen):
-        self.pagenum = 0
+        self.pagenum = 1
+        self.maxpages = 6
         self.onglet_screen = onglet_screen
         self.screen_width, self.screen_height = onglet_screen.get_size()
         self.rightside = int(self.screen_width * 0.02)
@@ -252,28 +253,29 @@ class Onglet3:
         place_prise_par_texte = paragraph_text.get_rect().width
 
         self.arrowup_image = pygame.image.load("Ressources/arrowup.png")
+        # Mettre l'image sous forme de sprite
         self.arrowup_image = pygame.transform.scale(self.arrowup_image, (int(self.screen_width * 0.035), int(self.screen_height * 0.03)))
-        self.arrowup_rect = self.arrowup_image.get_rect(topleft=(int(self.rightside + place_prise_par_texte), int(self.screen_height * 0.20)))
-
-        print(self.arrowup_rect.right)
+        # Récupérer le rectangle de l'image
+        self.arrowup_rect = self.arrowup_image.get_rect(topleft=(int(self.rightside + place_prise_par_texte + 10), int(self.screen_height * 0.23)))
 
 
         self.arrowdown_image = pygame.image.load("Ressources/arrowdown.png")
         self.arrowdown_image = pygame.transform.scale(self.arrowdown_image, (int(self.screen_width * 0.035), int(self.screen_height * 0.03)))
         self.arrowdown_rect = self.arrowdown_image.get_rect(topleft=(int(self.arrowup_rect.right + 10), int(self.screen_height * 0.23)))
 
-    def handle_events(self, events):
-        print("handle events onglet 3")
+    def handle_events(self, events, tab_rect):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if self.arrowup_rect.collidepoint(event.pos):
-                        self.pagenum -= 1
-                        print("up")
-                    elif self.arrowdown_rect.collidepoint(event.pos):
-                        self.pagenum += 1
-                        print("down")
-
+                    # Additionner la position du rectangle de l'onglet avec la position de la souris
+                    # pour obtenir la position de la souris dans l'onglet
+                    mouse_pos = (event.pos[0] - tab_rect.x, event.pos[1] - tab_rect.y)
+                    if self.arrowup_rect.collidepoint(mouse_pos):
+                        if self.pagenum > 1:
+                            self.pagenum -= 1
+                    elif self.arrowdown_rect.collidepoint(mouse_pos):
+                        if self.pagenum < self.maxpages:
+                            self.pagenum += 1
     def print_formatted_text(self, paragraph_text):
         x = self.rightside
         y = int(self.screen_height * 0.30)
@@ -324,7 +326,7 @@ class Onglet3:
         self.onglet_screen.blit(title_text2, title_text2_rect)
 
         # Chapeau de l'onglet
-        paragraph_text = self.font_paragraph.render("Rachel Perdita 03/06/21    Page : ", True, GREEN)
+        paragraph_text = self.font_paragraph.render("Rachel Perdita 03/06/21    Page :  " + str(self.pagenum), True, GREEN)
         paragraph_rect = paragraph_text.get_rect(topleft=(
             self.rightside, int(self.screen_height * 0.23)))  # Position relative pour le deuxième paragraphe
         self.onglet_screen.blit(paragraph_text, paragraph_rect)
@@ -378,12 +380,32 @@ class Onglet3:
 
             "Chacune de ces méthodes offre une solution unique pour protéger l'information, reflétant l'évolution constante de la cryptographie dans un monde numérique dynamique. Les professionnels de la sécurité doivent naviguer habilement parmi ces options pour garantir la confidentialité et l'intégrité des données dans un paysage de plus en plus complexe."
         ]
-        self.print_formatted_text(paragraph0)
 
+        paragraphoriginal = [
+            ["Dans la quête constante de protéger l'information sensible dans le monde numérique, la cryptographie offre un arsenal diversifié de méthodes d'encryption. Chacune de ces techniques, allant des classiques aux plus avancées, joue un rôle crucial dans la sécurisation des données. Dans cette analyse approfondie, nous examinons 20 façons de crypter un message, mettant en lumière la sophistication et la diversité de ces méthodes.",
 
-        if self.pagenum < 6:
-            self.onglet_screen.blit(self.arrowup_image, self.arrowup_rect)
+            "Substitution Monoalphabétique :\nChaque lettre est remplacée par une autre lettre selon une correspondance aléatoire, créant une substitution unique pour chaque lettre du message.",
+
+            "Transposition :\nCette technique réarrange l'ordre des lettres dans le message en suivant un schéma prédéterminé, ajoutant une dimension supplémentaire de complexité à la lecture.",
+
+            "Chiffrement de César :\nLa méthode de César consiste à décaler par la droite chaque lettre de l'alphabet ou chiffre par un nombre fixe caractérisé par une “clé”. Par exemple, un décalage de 6  places convertira A en G, B en H, et ainsi de suite.",
+
+            "Chiffre de Playfair :\nFondé sur une grille 5x5, ce chiffre remplace les paires de lettres selon des règles spécifiques définies par la position des lettres dans la grille."],
+            [
+            "Chiffre de Vigenère :\nÉvolution du chiffrement de César, le chiffre de Vigenère utilise une clé pour déterminer le décalage des lettres. Pour chiffrer un message, on aligne le texte original et la clé, puis on utilise une table de Vigenère, souvent représentée sous forme de grille. Chaque lettre du message est décalée par la lettre correspondante de la clé en utilisant la ligne et la colonne appropriées dans la table.",
+
+            "Chiffre d'Affine :\nCette technique combine les méthodes de substitution et de transposition en utilisant une fonction mathématique linéaire.",
+
+            "Chiffre de Hill :\nEn utilisant une matrice, le chiffre de Hill effectue une transformation sur des groupes de lettres du message original."]]
+
+        #self.print_formatted_text(paragraph0)
+        self.print_formatted_text(paragraphoriginal[self.pagenum - 1])
+
+        if self.pagenum < self.maxpages:
             self.onglet_screen.blit(self.arrowdown_image, self.arrowdown_rect)
+        if self.pagenum > 1:
+            self.onglet_screen.blit(self.arrowup_image, self.arrowup_rect)
+
 
         # line_height = int(0)
         # x, y = self.rightside, int(self.screen_height * 0.30)
