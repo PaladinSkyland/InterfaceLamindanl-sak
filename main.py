@@ -83,10 +83,8 @@ class Game:
 
             if self.current_window == self.tabbed_interface:
                 self.tabbed_interface.handle_events(events)
-
             self.current_window.update()
             self.current_window.draw()
-
 
 
 
