@@ -94,7 +94,7 @@ class LoginPage:
                 self.is_running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    if self.password == "password":
+                    if self.password == "mot_de_passe":
                         self.is_login_complete = True
                         print("Login successful")
                     else:

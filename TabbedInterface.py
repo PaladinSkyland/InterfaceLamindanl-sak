@@ -39,14 +39,19 @@ class TabbedInterface:
         self.tab_images = self.load_tab_images()  # 5 images pour les onglets
         self.tab_sprites = self.get_tab_sprites()  # 5 sprites pour les onglets
 
+        self.missing_usb_image = pygame.image.load("Ressources/missing_usb_opacity.png")
+        # Redimensionner l'image avec la même taille que les sprites d'onglet
+        self.missing_usb_image = pygame.transform.scale(self.missing_usb_image, self.tab_sprites.sprites()[0].rect.size)
+
+
         self.is_running = True
 
         self.tab_rect = self.get_tab_content_space()  # Rectangle du contenu des onglets
         self.subsurface = self.screen.subsurface(self.tab_rect)  # Surface virtuelle pour le contenu des onglets
-        self.onglet = [Onglet1(self.subsurface), Onglet2(self.subsurface), Onglet3(self.subsurface), Onglet4(), Onglet5(self.subsurface)]  # Contenu de chaque onglet
+        self.onglet = [Onglet1(self.subsurface), Onglet2(self.subsurface), Onglet3(self.subsurface), Onglet4(self.subsurface), Onglet5(self.subsurface)]  # Contenu de chaque onglet
 
         #USB
-        self.usbconnected = False
+        self.usbconnected = True
         self.monitor = USBMonitor()
 
         # Start the daemon avec votre fonction de connexion
@@ -107,8 +112,6 @@ class TabbedInterface:
                                 if self.usbconnected:
                                     self.current_tab = i
                                     print("Tab changed to", self.current_tab)
-                                else:
-                                    print("USB not connected")
                             else:
                                 self.current_tab = i
                                 print("Tab changed to", self.current_tab)
@@ -118,9 +121,17 @@ class TabbedInterface:
         pass
 
     def draw(self):
+
         self.screen.fill(BLACK)
         # Afficher les onglets en une colonne à gauche
         self.tab_sprites.draw(self.screen)
+
+        if not self.usbconnected :
+            # Afficher l'image de l'USB manquant sur les onglets 2,3,4
+            self.screen.blit(self.missing_usb_image, self.tab_sprites.sprites()[1].rect)
+            self.screen.blit(self.missing_usb_image, self.tab_sprites.sprites()[2].rect)
+            self.screen.blit(self.missing_usb_image, self.tab_sprites.sprites()[3].rect)
+
 
         # Calculer la position de la barre verte
         line_x = self.tab_sprites.sprites()[-1].rect.right + 20
@@ -131,6 +142,7 @@ class TabbedInterface:
 
         # Passer tab_rect à la méthode draw de l'onglet actuel
         self.onglet[self.current_tab].draw()
+
 
 
     def get_tab_content_space(self):
@@ -530,8 +542,85 @@ class Onglet3:
 
 
 class Onglet4:
-    def draw(self, screen):
-        font = pygame.font.Font(None, 36)
-        text = font.render("Contenu onglet 4", True, GREEN)
-        text_rect = text.get_rect(center=(screen.get_width() - 200, screen.get_height() // 2))
-        screen.blit(text, text_rect)
+    def __init__(self,onglet_screen):
+        self.screen = onglet_screen
+        self.screen_width, self.screen_height = onglet_screen.get_size()
+        self.rightside = int(self.screen_width * 0.02)
+
+        self.is_login_complete = False
+        self.is_login_failed = False
+        self.text_color = (0, 0, 0)
+        self.input_box_color = (200, 200, 200)
+
+        #Fonts
+        self.font_title = pygame.font.Font(font_path, int(self.screen_height * 0.18))  # Taille relative pour le titre
+        self.font_password = pygame.font.Font(font_path, 36)
+
+        # Entrées
+        self.password = ""
+
+
+    def handle_events(self, events, tab_rect):
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.is_running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    if self.password == "REVOLVE4EVER":
+                        self.is_login_complete = True
+                        print("Login successful")
+                    else:
+                        self.is_login_failed = True
+                        print("Login failed")
+                elif event.key == pygame.K_BACKSPACE:
+                    # Gestion de la suppression
+                    self.password = self.password[:-1]
+                elif event.unicode:  # Vérifier si le caractère unicode est disponible
+                    char = event.unicode
+                    # Convertir en majuscule
+                    char = char.upper()
+                    self.password += char
+                    print(self.password)
+
+    def draw(self):
+        self.screen.fill(BLACK)
+
+        # Titre de l'onglet
+        title_text = self.font_title.render("Reboot Mot De Passe", True, GREEN)
+        title_rect = title_text.get_rect(
+            topleft=((self.screen.get_width() - self.font_title.render("Reboot Mot De Passe", True, GREEN).get_width()) // 2, self.screen.get_height() * 0.25))  # Position relative pour le titre
+        self.screen.blit(title_text, title_rect)
+
+        # Calcul de la position centrée de l'entrée du mot de passe
+        input_box_x = (self.screen.get_width() - 240) // 2
+        input_box_y = int(self.screen.get_height() * 0.55)
+
+        # Dimensions ajustées
+        input_box_width = 280
+        input_box_height = 50
+
+        # Couleurs
+        border_color = GREEN  # Vert pour les bordures
+        inside_color = BLACK
+
+        # Affichage du champ de mot de passe
+        pygame.draw.rect(self.screen, border_color, (input_box_x, input_box_y, input_box_width, input_box_height))
+        pygame.draw.rect(self.screen, inside_color, (
+            input_box_x + 2, input_box_y + 2, input_box_width - 4, input_box_height - 4))  # Intérieur en noir
+
+        # pygame.draw.rect(self.screen, text_color, (input_box_x + input_box_width, input_box_y, 2, 30))
+        if self.is_login_failed:
+            text_surface = self.font_password.render("Mot de passe incorrect", True, (255, 0, 0))
+            self.screen.blit(text_surface, (input_box_x - 170, input_box_y + 60))
+
+        # Affichage du texte "Mot de Passe :" à gauche de l'entrée
+        text_surface = self.font_password.render("Mot de Passe :", True, GREEN)
+        self.screen.blit(text_surface, (input_box_x - 170, input_box_y + 8))
+
+        # Affichage du mot de passe masqué
+        password_text_surface = self.font_password.render(self.password, True, GREEN)
+        self.screen.blit(password_text_surface, (input_box_x + 10, input_box_y + 10))
+
+        pygame.display.flip()
+
+

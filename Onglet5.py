@@ -30,7 +30,7 @@ class Onglet5:
 
         self.animation_delay = 60
 
-        self.status = "StartMenu" # StartMenu, Playing, GameOver, Stop
+        self.status = "StartMenu" # StartMenu, Playing, GameOver, Win, Stop
 
         self.score = 0
 
@@ -42,7 +42,7 @@ class Onglet5:
 
         # Food
         # Randomly spawn food in the playing zone
-        self.food_pos = [random.randrange(self.playing_zone.left, self.playing_zone.right, 10), random.randrange(self.playing_zone.top, self.playing_zone.bottom, 10)]
+        self.food_pos = [random.randrange(self.playing_zone.left+20, self.playing_zone.right-20, 10), random.randrange(self.playing_zone.top+20, self.playing_zone.bottom-20, 10)]
         self.food_spawned = True
 
         # Game Over
@@ -89,7 +89,7 @@ class Onglet5:
                     self.snake_body = [[200, 150], [200 - 10, 150], [200 - (2 * 10), 150]]
                     self.direction = 'RIGHT'
                     self.change_to = self.direction
-                    self.food_pos = [random.randrange(self.playing_zone.left, self.playing_zone.right, 10), random.randrange(self.playing_zone.top, self.playing_zone.bottom, 10)]
+                    self.food_pos = [random.randrange(self.playing_zone.left+20, self.playing_zone.right-20, 10), random.randrange(self.playing_zone.top+20, self.playing_zone.bottom-20, 10)]
                     self.food_spawned = True
 
         # Making sure the snake cannot move in the opposite direction instantaneously
@@ -124,7 +124,7 @@ class Onglet5:
                 self.snake_body.pop()
             # Spawning food on the screen
             if not self.food_spawned:
-                self.food_pos = [random.randrange(self.playing_zone.left, self.playing_zone.right, 10), random.randrange(self.playing_zone.top, self.playing_zone.bottom, 10)]
+                self.food_pos = [random.randrange(self.playing_zone.left+20, self.playing_zone.right-20, 10), random.randrange(self.playing_zone.top+20, self.playing_zone.bottom-20, 10)]
                 self.food_spawned = True
 
             # Game Over conditions
