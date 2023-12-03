@@ -5,6 +5,7 @@ import sys
 # Initialisation de Pygame
 pygame.init()
 
+
 font_path = "Ressources/Sevastopol-Interface.ttf"
 
 
@@ -83,7 +84,9 @@ class LoginPage:
         self.input_box_color = (200, 200, 200)
 
         # Police
+        self.welcome_font = pygame.font.Font(font_path, 48)
         self.font = pygame.font.Font(font_path, 36)
+
 
         # Entrées
         self.password = ""
@@ -118,10 +121,14 @@ class LoginPage:
         self.screen.fill(BLACK)
 
         welcome_message = "Bienvenue Professeur Lamindanlésak"
-        welcome_font = pygame.font.Font(font_path, 50)  # Police ajustée
-        welcome_text_surface = welcome_font.render(welcome_message, True, text_color)
-        welcome_text_rect = welcome_text_surface.get_rect(center=(self.screen.get_width() // 2, 30))
-        self.screen.blit(welcome_text_surface, welcome_text_rect)
+        # Affichage du message de bienvenue
+        text_surface = self.welcome_font.render(welcome_message, True, text_color)
+        text_rect = text_surface.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() * 0.3))
+        self.screen.blit(text_surface, text_rect)
+
+
+
+
 
 
         # Calcul de la position centrée de l'entrée du mot de passe
@@ -156,4 +163,40 @@ class LoginPage:
 
         pygame.display.flip()
 
+class CongratulationPage:
+    def __init__(self, screen):
+        self.screen = screen
+        self.is_running = True
 
+    def handle_events(self, events):
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.is_running = False
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
+    def drawtime(self,minuteurtext):
+        self.screen.fill(BLACK)
+
+        # Affichage du texte de félicitations au centre de l'écran
+        text_surface = pygame.font.Font(font_path, 80).render("Félicitations !", True, text_color)
+        # Centré en haut de l'écran
+        text_rect = text_surface.get_rect(center=(self.screen.get_width() // 2, 300))
+        self.screen.blit(text_surface, text_rect)
+
+        #affichage "votre temps restant" au centre de l'écran
+        text_surface = pygame.font.Font(font_path, 80).render("Votre temps restant :", True, text_color)
+        # Centré en haut de l'écran
+        text_rect = text_surface.get_rect(center=(self.screen.get_width() // 2, 400))
+        self.screen.blit(text_surface, text_rect)
+
+
+        text_time = pygame.font.Font(font_path, 80).render(minuteurtext, True, text_color)
+        # Centré en haut de l'écran
+        text_rect = text_time.get_rect(center=(self.screen.get_width() // 2, 500))
+        self.screen.blit(text_time, text_rect)
+
+        pygame.display.flip()

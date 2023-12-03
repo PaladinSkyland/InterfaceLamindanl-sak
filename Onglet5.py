@@ -31,6 +31,9 @@ class Onglet5:
         self.animation_delay = 60
 
         self.status = "StartMenu" # StartMenu, Playing, GameOver, Win, Stop
+        self.win = False
+        self.win_text = self.font.render("clé = 2", True, GREEN)
+        self.win_text_rect = self.win_text.get_rect(center=(self.screen_width/2, self.screen_height/2))
 
         self.score = 0
 
@@ -58,14 +61,16 @@ class Onglet5:
         self.start_button_text_rect = self.start_button_text.get_rect(center=(self.screen_width/2, self.screen_height/2 + 50))
         self.start_button = pygame.Rect(self.start_button_text_rect.left - 10, self.start_button_text_rect.top - 10, self.start_button_text_rect.width + 20, self.start_button_text_rect.height + 20)
 
+        # Score Text en haut à gauche
+        self.score_text = self.font.render("Score : " + str(self.score), True, WHITE)
+        self.score_text_rect = self.score_text.get_rect(topleft=(self.playing_zone.left, self.playing_zone.top - 50))
+
 
 
     def handle_events(self, events, tab_rect):
         self.update()
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.status = "Stop"
                 if event.key == pygame.K_LEFT or event.key == ord('q'):
                     self.change_to = 'LEFT'
                 if event.key == pygame.K_RIGHT or event.key == ord('d'):
@@ -104,6 +109,8 @@ class Onglet5:
 
     def update(self):
         if self.status == "Playing":
+            if self.score >=5:
+                self.win = True
 
             # Moving the snake
             if self.direction == 'UP':
@@ -151,6 +158,17 @@ class Onglet5:
             # Draw rectangle for playing zone
             pygame.draw.rect(self.screen, WHITE, self.playing_zone, 2)
 
+            # affichage du score en haut à gauche
+            self.score_text = self.font.render("Score : " + str(self.score) + "  /5", True, WHITE)
+            self.screen.blit(self.score_text, self.score_text_rect)
+
+            # if win, affichez le message de victoire à droite du score
+            if self.win == True:
+                # mettre le message à droite du score
+                self.win_text_rect = self.win_text.get_rect()
+                self.win_text_rect.center = (self.score_text_rect.right + 100, self.score_text_rect.centery)
+                self.screen.blit(self.win_text, self.win_text_rect)
+
 
             # Drawing Snake Body
             for pos in self.snake_body:
@@ -164,6 +182,13 @@ class Onglet5:
             self.screen.blit(self.game_over_text, self.game_over_text_rect)
             self.screen.blit(self.restart_button_text, self.restart_button_text_rect)
             pygame.draw.rect(self.screen, GREEN, self.restart_button, 2)
+
+            # affichage du texte de win en dessous du bouton restart
+            if self.win == True:
+                #mettre le message en dessous du bouton restart
+                self.win_text_rect = self.win_text.get_rect()
+                self.win_text_rect.center = (self.restart_button_text_rect.centerx, self.restart_button_text_rect.bottom + 50)
+                self.screen.blit(self.win_text, self.win_text_rect)
 
 
         # Refresh game screen

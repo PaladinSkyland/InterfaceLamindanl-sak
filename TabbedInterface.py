@@ -51,7 +51,7 @@ class TabbedInterface:
         self.onglet = [Onglet1(self.subsurface), Onglet2(self.subsurface), Onglet3(self.subsurface), Onglet4(self.subsurface), Onglet5(self.subsurface)]  # Contenu de chaque onglet
 
         #USB
-        self.usbconnected = True
+        self.usbconnected = False
         self.monitor = USBMonitor()
 
         # Start the daemon avec votre fonction de connexion
@@ -547,7 +547,7 @@ class Onglet4:
         self.screen_width, self.screen_height = onglet_screen.get_size()
         self.rightside = int(self.screen_width * 0.02)
 
-        self.is_login_complete = False
+        self.is_finished = False
         self.is_login_failed = False
         self.text_color = (0, 0, 0)
         self.input_box_color = (200, 200, 200)
@@ -562,16 +562,14 @@ class Onglet4:
 
     def handle_events(self, events, tab_rect):
         for event in events:
-            if event.type == pygame.QUIT:
-                self.is_running = False
-            elif event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     if self.password == "REVOLVE4EVER":
-                        self.is_login_complete = True
-                        print("Login successful")
+                        self.is_finished = True
+                        #print("REBOOT successful")
                     else:
                         self.is_login_failed = True
-                        print("Login failed")
+                        #print("Login failed")
                 elif event.key == pygame.K_BACKSPACE:
                     # Gestion de la suppression
                     self.password = self.password[:-1]
@@ -580,47 +578,53 @@ class Onglet4:
                     # Convertir en majuscule
                     char = char.upper()
                     self.password += char
-                    print(self.password)
+                    #print(self.password)
 
     def draw(self):
         self.screen.fill(BLACK)
 
-        # Titre de l'onglet
-        title_text = self.font_title.render("Reboot Mot De Passe", True, GREEN)
-        title_rect = title_text.get_rect(
-            topleft=((self.screen.get_width() - self.font_title.render("Reboot Mot De Passe", True, GREEN).get_width()) // 2, self.screen.get_height() * 0.25))  # Position relative pour le titre
-        self.screen.blit(title_text, title_rect)
+        if not self.is_finished:
+            # Titre de l'onglet
+            title_text = self.font_title.render("Reboot Mot De Passe", True, GREEN)
+            title_rect = title_text.get_rect(
+                topleft=((self.screen.get_width() - self.font_title.render("Reboot Mot De Passe", True, GREEN).get_width()) // 2, self.screen.get_height() * 0.25))  # Position relative pour le titre
+            self.screen.blit(title_text, title_rect)
 
-        # Calcul de la position centrée de l'entrée du mot de passe
-        input_box_x = (self.screen.get_width() - 240) // 2
-        input_box_y = int(self.screen.get_height() * 0.55)
+            # Calcul de la position centrée de l'entrée du mot de passe
+            input_box_x = (self.screen.get_width() - 240) // 2
+            input_box_y = int(self.screen.get_height() * 0.55)
 
-        # Dimensions ajustées
-        input_box_width = 280
-        input_box_height = 50
+            # Dimensions ajustées
+            input_box_width = 280
+            input_box_height = 50
 
-        # Couleurs
-        border_color = GREEN  # Vert pour les bordures
-        inside_color = BLACK
+            # Couleurs
+            border_color = GREEN  # Vert pour les bordures
+            inside_color = BLACK
 
-        # Affichage du champ de mot de passe
-        pygame.draw.rect(self.screen, border_color, (input_box_x, input_box_y, input_box_width, input_box_height))
-        pygame.draw.rect(self.screen, inside_color, (
-            input_box_x + 2, input_box_y + 2, input_box_width - 4, input_box_height - 4))  # Intérieur en noir
+            # Affichage du champ de mot de passe
+            pygame.draw.rect(self.screen, border_color, (input_box_x, input_box_y, input_box_width, input_box_height))
+            pygame.draw.rect(self.screen, inside_color, (
+                input_box_x + 2, input_box_y + 2, input_box_width - 4, input_box_height - 4))  # Intérieur en noir
 
-        # pygame.draw.rect(self.screen, text_color, (input_box_x + input_box_width, input_box_y, 2, 30))
-        if self.is_login_failed:
-            text_surface = self.font_password.render("Mot de passe incorrect", True, (255, 0, 0))
-            self.screen.blit(text_surface, (input_box_x - 170, input_box_y + 60))
+            # pygame.draw.rect(self.screen, text_color, (input_box_x + input_box_width, input_box_y, 2, 30))
+            if self.is_login_failed:
+                text_surface = self.font_password.render("Mot de passe incorrect", True, (255, 0, 0))
+                self.screen.blit(text_surface, (input_box_x - 170, input_box_y + 60))
 
-        # Affichage du texte "Mot de Passe :" à gauche de l'entrée
-        text_surface = self.font_password.render("Mot de Passe :", True, GREEN)
-        self.screen.blit(text_surface, (input_box_x - 170, input_box_y + 8))
+            # Affichage du texte "Mot de Passe :" à gauche de l'entrée
+            text_surface = self.font_password.render("Mot de Passe :", True, GREEN)
+            self.screen.blit(text_surface, (input_box_x - 170, input_box_y + 8))
 
-        # Affichage du mot de passe masqué
-        password_text_surface = self.font_password.render(self.password, True, GREEN)
-        self.screen.blit(password_text_surface, (input_box_x + 10, input_box_y + 10))
-
+            # Affichage du mot de passe masqué
+            password_text_surface = self.font_password.render(self.password, True, GREEN)
+            self.screen.blit(password_text_surface, (input_box_x + 10, input_box_y + 10))
+        elif self.is_finished:
+            self.screen.fill(BLACK)
+            title_text = self.font_title.render("Mot de passe correct", True, GREEN)
+            title_rect = title_text.get_rect(
+                topleft=((self.screen.get_width() - self.font_title.render("Mot de passe correct", True, GREEN).get_width()) // 2, self.screen.get_height() * 0.25))
+            self.screen.blit(title_text, title_rect)
         pygame.display.flip()
 
 
