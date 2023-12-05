@@ -42,6 +42,7 @@ class Game:
         self.minuter_value = 0
         self.minuter_status = "Play" # Play, Stop
         self.minuteurtext = ""
+        self.temps_ecoule = 0
 
         pygame.display.set_caption("Interface Lamindanlsak")
         self.clock = pygame.time.Clock()
@@ -112,8 +113,8 @@ class Game:
 
             # Minuteur
             if self.minuter_status == "Play":
-                temps_ecoule = (pygame.time.get_ticks() - self.start_ticks) // 1000
-                self.minuteurtext = self.timesectommss(self.minuter_seconds - temps_ecoule)
+                self.temps_ecoule = (pygame.time.get_ticks() - self.start_ticks) // 1000
+                self.minuteurtext = self.timesectommss(self.minuter_seconds - self.temps_ecoule)
 
             if self.minuter_affichage:
                 # Affichage du minuteur en haut à droite de l'écran dans un carrée noir de bordure verte
@@ -124,10 +125,7 @@ class Game:
                 self.screen.blit(text, [self.SCREEN_WIDTH - 200, 70])
 
             if self.current_window == self.congratulation_page:
-                self.congratulation_page.drawtime(self.minuteurtext)
-
-            #print(self.minute)
-            #print(self.seconde)
+                self.congratulation_page.drawtime(self.timesectommss(self.temps_ecoule))
 
 
 

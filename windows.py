@@ -182,21 +182,15 @@ class CongratulationPage:
         self.screen.fill(BLACK)
 
         # Affichage du texte de félicitations au centre de l'écran
-        text_surface = pygame.font.Font(font_path, 80).render("Félicitations !", True, text_color)
+        text_surface = pygame.font.Font(font_path, 80).render("VICTOIRE !", True, text_color)
         # Centré en haut de l'écran
         text_rect = text_surface.get_rect(center=(self.screen.get_width() // 2, 300))
         self.screen.blit(text_surface, text_rect)
 
         #affichage "votre temps restant" au centre de l'écran
-        text_surface = pygame.font.Font(font_path, 80).render("Votre temps restant :", True, text_color)
+        text_surface = pygame.font.Font(font_path, 80).render("Vous avez mis " + minuteurtext+" minutes pour résoudre l’énigme", True, text_color)
         # Centré en haut de l'écran
-        text_rect = text_surface.get_rect(center=(self.screen.get_width() // 2, 400))
+        text_rect = text_surface.get_rect(center=(self.screen.get_width() // 2, 500))
         self.screen.blit(text_surface, text_rect)
-
-
-        text_time = pygame.font.Font(font_path, 80).render(minuteurtext, True, text_color)
-        # Centré en haut de l'écran
-        text_rect = text_time.get_rect(center=(self.screen.get_width() // 2, 500))
-        self.screen.blit(text_time, text_rect)
 
         pygame.display.flip()
