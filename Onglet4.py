@@ -15,7 +15,7 @@ WHITE = (255, 255, 255)
 
 RED = (255, 0, 0)
 
-class Onglet5:
+class Onglet4:
     # In this class, we will create a snake game like
     def __init__(self, onglet_screen):
         self.screen = onglet_screen
@@ -189,7 +189,3 @@ class Onglet5:
                 self.win_text_rect = self.win_text.get_rect()
                 self.win_text_rect.center = (self.restart_button_text_rect.centerx, self.restart_button_text_rect.bottom + 50)
                 self.screen.blit(self.win_text, self.win_text_rect)
-
-
-        # Refresh game screen
-        pygame.display.flip()

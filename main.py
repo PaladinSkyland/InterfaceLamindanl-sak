@@ -102,7 +102,7 @@ class Game:
             if self.current_window == self.tabbed_interface:
                 self.tabbed_interface.handle_events(events)
 
-            if self.tabbed_interface.onglet[3].is_finished:
+            if self.tabbed_interface.onglet[4].is_finished:
                 self.minuter_status = "Stop"
                 self.minuter_affichage = False
                 self.switch_window(self.congratulation_page)

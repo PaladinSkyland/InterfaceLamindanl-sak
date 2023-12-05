@@ -2,20 +2,11 @@ import textwrap
 
 import pygame
 
-from Onglet5 import Onglet5
+from Onglet4 import Onglet4
 from usbmonitor import USBMonitor
 from usbmonitor.attributes import ID_MODEL, ID_MODEL_ID, ID_VENDOR_ID
 
-
-
-# Create the USBMonitor instance
-
-# ... Rest of your code ...
-
-# If you don't need it anymore stop the daemon
-#monitor.stop_monitoring()
 import sys
-
 
 # Initialisation de Pygame
 #pygame.init()
@@ -26,8 +17,6 @@ font_path = "Ressources/Sevastopol-Interface.ttf"
 GREEN = (0,190,99)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-
-
 
 
 RED = (255, 0, 0)
@@ -541,7 +530,7 @@ class Onglet3:
             self.onglet_screen.blit(self.arrowup_image, self.arrowup_rect)
 
 
-class Onglet4:
+class Onglet5:
     def __init__(self,onglet_screen):
         self.screen = onglet_screen
         self.screen_width, self.screen_height = onglet_screen.get_size()
@@ -625,6 +614,5 @@ class Onglet4:
             title_rect = title_text.get_rect(
                 topleft=((self.screen.get_width() - self.font_title.render("Mot de passe correct", True, GREEN).get_width()) // 2, self.screen.get_height() * 0.25))
             self.screen.blit(title_text, title_rect)
-        pygame.display.flip()
 
 
